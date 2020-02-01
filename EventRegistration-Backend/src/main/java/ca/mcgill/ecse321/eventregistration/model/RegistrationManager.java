@@ -1,4 +1,12 @@
 package ca.mcgill.ecse321.eventregistration.model;
+import Event;
+import Registration;
+import Person;
+
+import java.util.Set;
+
+import javax.persistence.*;
+
 
 @Entity
 public class RegistrationManager {
