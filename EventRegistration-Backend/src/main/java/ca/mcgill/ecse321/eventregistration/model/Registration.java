@@ -1,11 +1,23 @@
 package ca.mcgill.ecse321.eventregistration.model;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Registration {
+
+	private int id;
+
+	public void setId(int value) {
+		this.id = value;
+	}
+
+	@Id
+	public int getId() {
+		return this.id;
+	}
+
 	private Person person;
 
 	@ManyToOne(optional = false)
@@ -28,14 +40,27 @@ public class Registration {
 		this.event = event;
 	}
 
-	private Integer id;
+	private Paypal paypal;
 
-	public void setId(Integer value) {
-		this.id = value;
+    @ManyToOne()
+	public Paypal getPaypal() {
+		return paypal;
 	}
 
-	@Id
-	public Integer getId() {
-		return this.id;
+	public void setPaypal(Paypal paypal){
+		this.paypal = paypal;
 	}
+
+	private RegistrationManager manager;
+
+    @ManyToOne()
+    public RegistrationManager getManager(){
+        return this.manager;
+    }
+
+    public void setManager(RegistrationManager pManager)
+    {
+        manager = pManager;
+    }
+
 }

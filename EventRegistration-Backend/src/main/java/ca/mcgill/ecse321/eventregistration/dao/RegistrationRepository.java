@@ -10,10 +10,9 @@ import ca.mcgill.ecse321.eventregistration.model.Registration;
 
 public interface RegistrationRepository extends CrudRepository<Registration, Integer> {
 
-	List<Registration> findByPerson(Person personName);
+	List<Registration> findByPerson(Person person);
 
-	boolean existsByPersonAndEvent(Person person, Event eventName);
+	boolean existsByPersonAndEvent(Person person, Event event);
 
-	Registration findByPersonAndEvent(Person person, Event eventName);
-
+	Registration findByPersonAndEvent(Person person, Event event);
 }

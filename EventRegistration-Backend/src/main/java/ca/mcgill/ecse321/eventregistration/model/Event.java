@@ -1,70 +1,93 @@
 package ca.mcgill.ecse321.eventregistration.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Entity
-public class Event{
-   private String name;
-   
-   public void setName(String value) {
-    this.name = value;
+@Table(name="event")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(discriminatorType=DiscriminatorType.STRING, name="TYPE")
+public class Event {
+    private String name;
+
+    public void setName(String value) {
+        this.name = value;
     }
-@Id
-public String getName() {
-    return this.name;
-       }
-   /**
-    * <pre>
-    *           1..1     1..1
-    * Event ------------------------> Date
-    *           &lt;       date
-    * </pre>
-    */
-   private Date date;
-   
-   public void setDate(Date value) {
-      this.date = value;
-   }
-   
-   public Date getDate() {
-      return this.date;
-   }
-   
-   /**
-    * <pre>
-    *           1..1     1..1
-    * Event ------------------------> Time
-    *           &lt;       startTime
-    * </pre>
-    */
-   private Time startTime;
-   
-   public void setStartTime(Time value) {
-      this.startTime = value;
-   }
-   
-   public Time getStartTime() {
-      return this.startTime;
-   }
-   
-   /**
-    * <pre>
-    *           1..1     1..1
-    * Event ------------------------> Time
-    *           &lt;       endTime
-    * </pre>
-    */
-   private Time endTime;
-   
-   public void setEndTime(Time value) {
-      this.endTime = value;
-   }
-   
-   public Time getEndTime() {
-      return this.endTime;
-   }
-   
-   }
+    @Id
+    public String getName() {
+        return this.name;
+    }
+    private Date date;
+
+    public void setDate(Date value) {
+        this.date = value;
+    }
+    public Date getDate() {
+        return this.date;
+    }
+    private Time startTime;
+
+    public void setStartTime(Time value) {
+        this.startTime = value;
+    }
+    public Time getStartTime() {
+        return this.startTime;
+    }
+    private Time endTime;
+
+    public void setEndTime(Time value) {
+        this.endTime = value;
+    }
+    public Time getEndTime() {
+        return this.endTime;
+    }
+
+    private Performer performer;
+    
+    @ManyToOne()
+    public Performer getPerformer(){
+        return performer;
+    }
+    
+    public void setPerformer(Performer pPerformer)
+    {
+        performer = pPerformer;
+    }
+
+    private RegistrationManager manager;
+
+    @ManyToOne()
+    public RegistrationManager getManager(){
+        return this.manager;
+    }
+
+    public void setManager(RegistrationManager pManager)
+    {
+        manager = pManager;
+    }
+
+    private List<Registration> registrations;
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    public List<Registration> getRegistrations()
+    {
+        return registrations;
+    }
+
+    public void setRegistrations(List<Registration> pRegistrations)
+    {
+        this.registrations = pRegistrations;
+    }
+}
