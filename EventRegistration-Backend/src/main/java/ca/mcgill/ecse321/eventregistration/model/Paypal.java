@@ -1,12 +1,8 @@
 package ca.mcgill.ecse321.eventregistration.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Paypal{
@@ -46,17 +42,5 @@ public class Paypal{
     public void setAmount(int pAmount)
     {
         amount = pAmount;
-    }
-
-    List<Event> events;
-    
-    @OneToMany(cascade = { CascadeType.ALL })
-    public List<Event> getEvents(){
-        return events;
-    }
-
-    public void setEvents(List<Event> pEvents)
-    {
-        this.events = pEvents;
     }
 }
