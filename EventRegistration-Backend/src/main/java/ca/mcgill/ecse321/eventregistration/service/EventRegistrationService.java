@@ -178,11 +178,6 @@ public class EventRegistrationService {
 	}
 
 	@Transactional
-	public List<Registration> getRegistrationsByPerson(Person person) {
-		return toList(registrationRepository.findByPerson(person));
-	}
-
-	@Transactional
 	public List<Event> getEventsAttendedByPerson(Person person) {
 		if (person == null) {
 			throw new IllegalArgumentException("Person cannot be null!");

@@ -143,12 +143,6 @@ public class EventRegistrationRestController {
 		return createRegistrationDtosForPerson(p);
 	}
 
-	@GetMapping(value = { "/events/performer/{name}", "/events/performer/{name}/" })
-	public List<EventDto> getEventsOfPerformer(@PathVariable("name") PerformerDto pDto) {
-		Performer p = convertToDomainObject(pDto);
-		return createAttendedEventDtosForPerson(p);
-	}
-
 	@GetMapping(value = { "/persons/{name}", "/persons/{name}/" })
 	public PersonDto getPersonByName(@PathVariable("name") String name) throws IllegalArgumentException {
 		return convertToDto(service.getPerson(name));
@@ -215,45 +209,43 @@ public class EventRegistrationRestController {
 		if (p == null) {
 			throw new IllegalArgumentException("There is no such Person!");
 		}
-		PersonDto personDto = new PersonDto(p.getName());
-		List<EventDto> eDtos = createAttendedEventDtosForPerson(p);
-		personDto.setEventsAttended(eDtos);
-		personDto.setPaypals(createPaypalDtosForPerson(p,eDtos));
-		return personDto;
+		List<Registration> registrations = service.getRegistrationsForPerson(p);
+		List<EventDto> eventsAttended = new ArrayList<>();
+		List<PaypalDto> paypals = new ArrayList<>();
+		for (Registration r : registrations)
+		{
+			eventsAttended.add(convertToDto(r.getEvent()));
+			paypals.add(convertToDto(r.getPaypal()));
+		}
+		PersonDto pDto = new  PersonDto(p.getName());
+		pDto.setEventsAttended(eventsAttended);
+		pDto.setPaypals(paypals);
+		return pDto;
 	}
 
-	private List<PaypalDto> createPaypalDtosForPerson(Person p,List<EventDto> eDtos) {
-		List<Paypal> paypals = new ArrayList<>();
-		List<Event> events = new ArrayList<>();
-		for (EventDto e: eDtos)
-			events.add(convertToDomainObject(e));
-		for (Event e:events)
-			paypals.add(service.getPaypalFromPersonAndEvent(p, e));
-		List<PaypalDto> pDtos = new ArrayList<>();
-		for (Paypal pp : paypals) {
-			pDtos.add(convertToDto(pp));
-		}
-		return pDtos;
-	}
-	
-	private Event convertToDomainObject(EventDto eDto) {
-		List<Event> allEvents = service.getAllEvents();
-		for (Event e : allEvents) {
-			if (e.getName().equals(eDto.getName())) {
-				return e;
-			}
-		}
-		return null;
-	}
 
 	private PerformerDto convertToDto(Performer p) {
 		if (p == null) {
 			throw new IllegalArgumentException("There is no such Person!");
 		}
-		PerformerDto performerDto = new PerformerDto(p.getName());
-		performerDto.setEventsAttended(createAttendedEventDtosForPerson(p));
-		performerDto.setEventsPerformed(createPerformedEventDtosForPerformer(p));
-		return performerDto;
+		List<Event> eventsPorformed = service.getEventsPerformedByPerformer(p);
+		List<EventDto> performed = new ArrayList<>();
+		for(Event e: eventsPorformed) {
+			performed.add(convertToDto(e));
+		}
+		List<Registration> registrations = service.getRegistrationsForPerson(p);
+		List<EventDto> eventsAttended = new ArrayList<>();
+		List<PaypalDto> paypals = new ArrayList<>();
+		for (Registration r : registrations)
+		{
+			eventsAttended.add(convertToDto(r.getEvent()));
+			paypals.add(convertToDto(r.getPaypal()));
+		}
+		PerformerDto pDto = new PerformerDto(p.getName());
+		pDto.setEventsAttended(eventsAttended);
+		pDto.setPaypals(paypals);
+		pDto.setEventsPerformed(performed);
+		return pDto;
 	}
 	private PaypalDto convertToDto(Paypal p){
 		PaypalDto paypalDto = null;
@@ -300,35 +292,12 @@ public class EventRegistrationRestController {
 		return null;
 	}
 
-	private Performer convertToDomainObject(PerformerDto pDto) {
-		List<Performer> allPersons = service.getAllPerformers();
-		for (Performer person : allPersons) {
-			if (person.getName().equals(pDto.getName())) {
-				return person;
-			}
-		}
-		return null;
-	}
 
 	// Other extracted methods (not part of the API)
 
-	private List<EventDto> createAttendedEventDtosForPerson(Person p) {
-		List<Event> eventsForPerson = service.getEventsAttendedByPerson(p);
-		List<EventDto> events = new ArrayList<>();
-		for (Event event : eventsForPerson) {
-			events.add(convertToDto(event));
-		}
-		return events;
-	}
 
-	private List<EventDto> createPerformedEventDtosForPerformer(Performer p) {
-		List<Event> eventsForPerson = service.getEventsPerformedByPerformer(p);
-		List<EventDto> events = new ArrayList<>();
-		for (Event event : eventsForPerson) {
-			events.add(convertToDto(event));
-		}
-		return events;
-	}
+
+
 
 
 	private List<RegistrationDto> createRegistrationDtosForPerson(Person p) {

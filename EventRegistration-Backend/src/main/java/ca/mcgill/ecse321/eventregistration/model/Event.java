@@ -66,18 +66,6 @@ public class Event {
         performer = pPerformer;
     }
 
-    private RegistrationManager manager;
-
-    @ManyToOne()
-    public RegistrationManager getManager(){
-        return this.manager;
-    }
-
-    public void setManager(RegistrationManager pManager)
-    {
-        manager = pManager;
-    }
-
     private List<Registration> registrations;
 
     @OneToMany(cascade = { CascadeType.ALL })

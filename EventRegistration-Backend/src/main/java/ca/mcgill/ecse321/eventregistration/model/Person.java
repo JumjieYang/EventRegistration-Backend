@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.DiscriminatorType;
 
@@ -27,17 +26,6 @@ public class Person{
         return this.name;
 }
 
-    private RegistrationManager manager;
-
-    @ManyToOne()
-    public RegistrationManager getManager(){
-        return this.manager;
-    }
-
-    public void setManager(RegistrationManager pManager)
-    {
-        manager = pManager;
-    }
 
     private List<Registration> registrations;
 
